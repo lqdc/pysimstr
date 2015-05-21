@@ -15,7 +15,7 @@ import Levenshtein
 
 def compare_bruteforce(s_to_compare, some_big_collection, threshold):
     for element in some_big_collection:
-        score = Levenshtein.jaro_winkler(s_to_compare, some_big_collection)
+        score = Levenshtein.jaro_winkler(s_to_compare, element)
         if score >= threshold:
             return True
     return False
