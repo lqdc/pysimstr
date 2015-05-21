@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
     name='pysimstr',
     packages=['pysimstr'],
-    requires=['python-Levenshtein'],
+    install_requires=['python-Levenshtein'],
     version='0.2',
     description='Fast(ish) string similarity for one vs many comparisons',
     author='Roman Sinayev',
