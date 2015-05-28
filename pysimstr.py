@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-@file pysimstr.py
+@file simstr.py
 @date Sun 17 May 2015 06:58:33 PM PDT
 @author Roman Sinayev
 @email roman.sinayev@gmail.com
@@ -76,15 +76,20 @@ class SimStr(object):
         self.plus_minus = plus_minus
         self.comparison_func = comparison_func
 
-    def check(self, s):
+    def check(self, s, instant_exact=True):
         """Check if a string is in the DB.
 
         :param s: str, string to check against the DB.
+        :param instant_exact: bool, look up exact matches with a hash lookup.
         :return: True or False
         :rtype: bool
 
         """
-        for comparison_string in self._get_comparison_strings(s):
+        all_sets = self._get_comparison_strings(s)
+        if instant_exact and s in all_sets:  # exact match
+            return True
+
+        for comparison_string in all_sets:
             if self.comparison_func(s, comparison_string) >= self.cutoff:
                 return True
         return False
