@@ -39,6 +39,9 @@ class SimStr(object):
                  Only consider strings that are different in this many
                  characters in length.
 
+    max_n : int|None, default=None
+            Only retrieve maximum `max_n` strings. If None, there is no limit.
+
     comparison_func : callable, default=Levenshtein.jaro_winkler
                       a function that takes two strings as arguments
                       and returns a float type similarity score between them.
@@ -65,6 +68,7 @@ class SimStr(object):
                  cutoff=0.85,
                  idx_size=3,
                  plus_minus=3,
+                 max_n=None,
                  comparison_func=Levenshtein.jaro_winkler):
         self.cutoff = cutoff
 
@@ -75,6 +79,7 @@ class SimStr(object):
         self._els_idxed = None
         self.plus_minus = plus_minus
         self.comparison_func = comparison_func
+        self.max_n = max_n
 
     def check(self, s, instant_exact=True):
         """Check if a string is in the DB.
@@ -102,11 +107,14 @@ class SimStr(object):
         :rtype: list
 
         """
-        all_similar = []
+        all_sim = []
+        use_max_n = self.max_n is not None
         for comparison_string in self._get_comparison_strings(s):
             if self.comparison_func(s, comparison_string) >= self.cutoff:
-                all_similar.append(comparison_string)
-        return all_similar
+                all_sim.append(comparison_string)
+                if use_max_n and len(all_sim) >= self.max_n:
+                    return all_sim
+        return all_sim
 
     def retrieve_with_score(self, s):
         """Retrieve all similar strings from the DB.
@@ -117,13 +125,15 @@ class SimStr(object):
         :rtype: list
 
         """
-        all_similar = []
+        all_sim = []
+        use_max_n = self.max_n is not None
         for comparison_string in self._get_comparison_strings(s):
             score = self.comparison_func(s, comparison_string)
             if score >= self.cutoff:
-                all_similar.append((comparison_string, score))
-
-        return all_similar
+                all_sim.append((comparison_string, score))
+                if use_max_n and len(all_sim) >= self.max_n:
+                    return all_sim
+        return all_sim
 
     def insert(self, seq):
         """
