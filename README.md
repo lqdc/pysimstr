@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/lqdc/pysimstr.svg?branch=master)](https://travis-ci.org/lqdc/pysimstr)
+
 #PySimStr
 
 *Fast(ish) string similarity for one vs many comparisons.*
